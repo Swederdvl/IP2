@@ -35,38 +35,38 @@ We nemen als voorbeeld twee fietsers, waarbij de fietser 1 een eenparige bewegin
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Beginwaarden
-dt = 0.25                  #s
-t_e = 10                   #s
-N = int(t_e/dt)+1
-t = np.arange(0,t_e+dt,dt) #s
+# # Beginwaarden
+# dt = 0.5                  #s
+# t_e = 10                   #s
+# N = int(t_e/dt)+1
+# t = np.arange(0,t_e+dt,dt) #s
 
-# fietser 1
-x_1 = np.zeros(N)          #m     maakt array van lengte N met alleen maar waarde 0.
-v_1 = 5                    #m/s
+# # fietser 1
+# x_1 = np.zeros(N)          #m     maakt array van lengte N met alleen maar waarde 0.
+# v_1 = 5                    #m/s
 
-# fietser 2
-x_2 = np.zeros(N)          #m     
-v_2 = np.zeros(N)          #m/s     
-a_2 = .5                   #m/s^2     
+# # fietser 2
+# x_2 = np.zeros(N)          #m     
+# v_2 = np.zeros(N)          #m/s     
+# a_2 = .5                   #m/s^2     
 
-# Uitvoeren van de simulatie
-for i in range(0,N-1):
-    x_1[i+1] = x_1[i] + v_1*dt
+# # Uitvoeren van de simulatie
+# for i in range(0,N-1):
+#     x_1[i+1] = x_1[i] + v_1*dt
     
-    x_2[i+1] = x_2[i] + v_2[i]*dt
-    v_2[i+1] = v_2[i] + a_2*dt
+#     x_2[i+1] = x_2[i] + v_2[i]*dt
+#     v_2[i+1] = v_2[i] + a_2*dt
 
-# Plotten van de gegevens.    
-plt.figure()
+# # Plotten van de gegevens.    
+# plt.figure()
 
-plt.xlabel('$t$(s)')
-plt.ylabel('$x$(m)')
+# plt.xlabel('$t$(s)')
+# plt.ylabel('$x$(m)')
 
-plt.plot(t,x_1,'r.', markersize=1, label='fietser 1')
-plt.plot(t,x_2,'b.', markersize=1, label='fietser 2')
-
-plt.show()
+# plt.plot(t,x_1,'r.', markersize=1, label='fietser 1')
+# plt.plot(t,x_2,'b.', markersize=1, label='fietser 2')
+# plt.grid()
+# plt.show()
 
 
 ```
@@ -81,7 +81,7 @@ Maak het tijdsinterval $dt$ groter en vergelijk de afgelegde weg in de tien seco
 <!-- Jouw antwoord hier  -->
 
 ```python
-%reset -f  #clears memory as we don't need it further down 
+%reset -f
 ```
 
 ## Naar een deeltjesmodel
@@ -230,6 +230,48 @@ En als je wilt gaan voor een uitdaging:
 
 ```python
 ### YOUR CODE HERE ###
+import random as rnd
+
+particles = []
+
+for i in range(11):
+    m = 1 
+    particles.append(ParticleClass(m=1.0, v=[rnd.randint(-5,5), 0], r=[i*5, 0.0],R=1.0))
+    # print(particles[i].r)
+
+path = []
+
+for i in range(len(particles)-1):
+    path.append([])
+    # print(len(path))
+```
+
+```python
+dt = 0.1
+
+for step in range(100):
+    for i in range(len(particles)-1):
+        particles[i].update_position(dt)
+        path[i].append(particles[i].r.copy())
+```
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+for i in range(len(particles)-1):
+    p = np.array(path[i])
+    t = np.arange(len(p)) * dt
+    plt.plot(p[:, 0], t, label=f"particle {i}")
+
+plt.xlabel("x")
+plt.ylabel("t")
+plt.show()
+```
+
+```python
+for i in range(len(particles)-1):
+    print(particles[i].r)
 ```
 
 Onze simulaties worden snel “zwaar”. Er moeten veel berekeningen gedaan worden en dat kost nu eenmaal tijd. Nu is het wel zo dat sommige berekeningen meer tijd kosten dan anderen. Om te kijken of een stukje code geoptimaliseerd kan worden, moeten we een timer maken. Dat kan met onderstaande code:
